@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 const urlShow = "http://localhost:3001/posts/";
 
@@ -13,15 +13,18 @@ function PostDetail() {
             setObjState(resp.data);
         })
     };
+
+useEffect(() => {getObj()}, [])
+
     return (
         <div>
             {ObjState !== -1 ?
                 <div>
                     <h1>{ObjState.title}</h1>
                     <p>{ObjState.content}</p>
+                    <img src={ObjState.image} alt="" />
                 </div>
                 : ""}
-            <button onClick={getObj}>Chiamata Api</button>
         </div>
     )
 };

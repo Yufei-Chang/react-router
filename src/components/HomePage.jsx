@@ -1,28 +1,27 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-const initialArticle = { title: "", content: "", author: "" }
-
+const initialArticle = { title: "", content: "", image: "" }
+import { useNavigate } from "react-router-dom";
 
 function HomePage() {
   const [formData, setFormData] = useState(initialArticle);
   const [articles, setArticles] = useState([]);
-  
+  const navigate = useNavigate();
+
   function loadData() {
   axios.get("http://localhost:3001/posts").then((resp) => {
-    console.log(resp.data);
+    // console.log(resp.data);
   setArticles(resp.data)
   })
   }
 
-function deleteData(id) {
-  axios.delete(`http://localhost:3001/posts/${id}`).then(() => console.log("cancellazione effettuata"))
-}
 
-function addData(newArticle) {
-  axios.post("http://localhost:3001/posts", newArticle).then(() => {
-    console.log("roba aggiunta")
+async function addData(newArticle) {
+  return axios.post("http://localhost:3001/posts", newArticle).then((resp) => {
+    // console.log(resp.data);
     loadData();
-  })
+    return resp.data;
+  });
 }
 
 useEffect(() => {
@@ -37,21 +36,25 @@ loadData();
     }))
   };
 
-  const handleFormSubmit = (event) => {
+  const handleFormSubmit = async (event) => {
     event.preventDefault();
-    const { title, content, author } = formData;
-    if (title && content && author) {
-      const newArticle = { title, content, author }; 
-      addData(newArticle); 
-      setFormData(initialArticle);
+    const { title, content, image } = formData;
+  
+    if (title && content && image) {
+      const newArticle = { title, content, image };
+  
+      try {
+        const result = await addData(newArticle); // Attende la risposta della promessa
+        setFormData(initialArticle); // Reimposta il modulo
+        console.log(result);
+        navigate(`/PostsList/${result.id}`); // Usa l'id restituito per la navigazione
+      } catch (error) {
+        console.error("Errore durante l'aggiunta dell'articolo:", error);
+      }
     }
   };
-  
-  const handleDelete = (id) => {
-    setArticles((prev) => prev.filter((curArticle) => curArticle.id !== id))
-    deleteData(id);
-  };
-  console.log(articles)
+    
+  // console.log(articles)
   
   return (
     <>
@@ -72,30 +75,15 @@ loadData();
             </div>
 
             <div className="mb-3">
-              <label htmlFor="author">Nome dell'autore</label>
-              <input type="text" className="form-control" id="author" name="author" value={formData.author} onChange={handleInputChange} />
+              <label htmlFor="image">L'immagine del ciiiiboh</label>
+              <input type="text" className="form-control" id="image" name="image" value={formData.image} onChange={handleInputChange} />
             </div>
 
             <button type="submit" className="btn btn-primary">Pubblica</button>
 
           </form>
         </section>
-        <div>
-          {articles.map((curArticle) => (
-            <div key={curArticle.id}>
-              <h2>
-                {curArticle.title}
-              </h2>
-              <div>
-                {curArticle.content}
-              </div>
-              <div>
-                {curArticle.author}
-              </div>
-              <button onClick={() => handleDelete(curArticle.id)}>Elimina</button>
-            </div>
-          ))}
-        </div>
+   
       </div>
     </>
   )
