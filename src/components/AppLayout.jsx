@@ -7,7 +7,7 @@ function AppLayout() {
                 <ul>
                     <li><NavLink to="/">Home</NavLink></li>
                     <li><NavLink to="/AboutUs">About Us</NavLink></li>
-                    <li><NavLink to="/PostsList">Dove buttiamo i cadaveri</NavLink></li>
+                    <li><NavLink to="/PostsList">Lista Post</NavLink></li>
                 </ul>
             </nav>
             <Outlet></Outlet>
