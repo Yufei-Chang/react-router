@@ -22,7 +22,7 @@ useEffect(() => {getObj()}, [])
                 <div>
                     <h1>{ObjState.title}</h1>
                     <p>{ObjState.content}</p>
-                    <img src={ObjState.image} alt="" />
+                    <img src={`http://localhost:3001${ObjState.image}`} alt="" />
                 </div>
                 : ""}
         </div>
